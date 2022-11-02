@@ -15,7 +15,7 @@ public class StudentRequest {
     String name;
 
     @NotEmpty(message = "birth day cannot empty")
-    Date birthDay;
+    String birthDay;
 
     @NotEmpty(message = "gender cannot empty")
     Boolean gender;

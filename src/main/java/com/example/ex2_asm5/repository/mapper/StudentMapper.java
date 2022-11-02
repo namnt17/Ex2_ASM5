@@ -1,11 +1,9 @@
 package com.example.ex2_asm5.repository.mapper;
 
 import com.example.ex2_asm5.controller.dto.StudentDTO;
+import com.example.ex2_asm5.controller.request.StudentRequest;
 import com.example.ex2_asm5.entity.Student;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -14,6 +12,9 @@ public interface StudentMapper {
 
     @Named("mapToDTOs")
     StudentDTO mapToDTO (Student student);
+
+    @Mapping(target = "id", ignore = true)
+    Student mapToEntity (StudentRequest studentRequest);
 
     @IterableMapping(qualifiedByName = "mapToDTOs")
     List<StudentDTO> mapToDTOs (List<Student> students);

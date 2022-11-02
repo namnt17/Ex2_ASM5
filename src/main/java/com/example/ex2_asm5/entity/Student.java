@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "student")
@@ -16,8 +17,7 @@ import java.util.Date;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Long id = UUID.randomUUID().getLeastSignificantBits();
 
     @NonNull
     String name;
