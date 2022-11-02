@@ -5,10 +5,10 @@ import com.example.ex2_asm5.controller.request.NameRequest;
 import com.example.ex2_asm5.controller.request.StudentRequest;
 import com.example.ex2_asm5.entity.Student;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 import com.example.ex2_asm5.repository.StudentRepository;
 import com.example.ex2_asm5.repository.mapper.StudentMapper;
 import com.example.ex2_asm5.service.StudentService;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;

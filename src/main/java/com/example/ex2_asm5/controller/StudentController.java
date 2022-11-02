@@ -7,12 +7,13 @@ import com.example.ex2_asm5.controller.request.NameRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import com.example.ex2_asm5.service.StudentService;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController
 @RequestMapping(path = "/students")
+@RestController
 @AllArgsConstructor
 public class StudentController {
 
