@@ -17,7 +17,8 @@ import java.util.UUID;
 public class Student {
 
     @Id
-    Long id = UUID.randomUUID().getLeastSignificantBits();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
     @NonNull
     String name;

@@ -7,7 +7,6 @@ import com.example.ex2_asm5.entity.Student;
 import com.example.ex2_asm5.repository.StudentRepository;
 import com.example.ex2_asm5.repository.mapper.StudentMapper;
 import com.example.ex2_asm5.service.StudentService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +34,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentServiceImpl() {
     }
 
-    public Date convertStringToDate(String date){
+    public static Date convertStringToDate(String date){
         try {
             return new SimpleDateFormat("dd/MM/yyyy").parse(date);
         } catch (ParseException e) {
@@ -79,7 +78,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public void updateOrCreate(Student student, StudentRequest request){
-        student.setGender(request.getGender());
+        student.setGender(request.isGender());
         student.setGpa(request.getGpa());
         student.setBirthDay(convertStringToDate(request.getBirthDay()));
         student.setName(request.getName());

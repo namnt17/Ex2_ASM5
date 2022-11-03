@@ -11,15 +11,12 @@ import java.util.Date;
 @Data
 public class StudentRequest {
 
-    @NotEmpty(message = "name cannot empty")
     String name;
 
-    @NotEmpty(message = "birth day cannot empty")
     String birthDay;
 
-    @NotEmpty(message = "gender cannot empty")
-    Boolean gender;
+    boolean gender;
 
-    Float gpa;
+    float gpa;
     String rank;
 }
