@@ -5,26 +5,21 @@ import com.example.ex2_asm5.controller.request.StudentRequest;
 import com.example.ex2_asm5.entity.Student;
 import com.example.ex2_asm5.repository.StudentRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.lang.reflect.Method;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+@Transactional
 class StudentServiceTest {
 
-
-    final StudentServiceImpl service = new StudentServiceImpl();
+    @Autowired
+    private StudentServiceImpl service;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -44,7 +39,16 @@ class StudentServiceTest {
     }
 
     @Test
+    @Rollback
     void update() {
+        Student student = studentRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("This student is not found!"));
+        StudentRequest request = new StudentRequest();
+        request.setName("Duc");
+        request.setGpa((float) 2.6);
+        request.setRank("Kha");
+        request.setBirthDay("28/10/2022");
+        service.update(request, student.getId());
+        assertEquals(student.getName(), "Duc");
     }
 
     @Test
