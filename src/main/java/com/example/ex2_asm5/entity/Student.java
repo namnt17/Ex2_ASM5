@@ -4,11 +4,11 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
-@Table(name = "student")
+@Table(name = "students")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,17 +20,22 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "name")
     @NonNull
     String name;
 
+    @Column(name = "birth_day")
     @NonNull
     Date birthDay;
 
+    @Column(name = "gender")
     @NonNull
     Boolean gender;
 
+    @Column(name = "gpa")
     Float gpa;
 
+    @Column(name = "ranking")
     String rank;
 
 }

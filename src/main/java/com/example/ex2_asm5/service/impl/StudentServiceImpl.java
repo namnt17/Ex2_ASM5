@@ -9,15 +9,16 @@ import com.example.ex2_asm5.repository.mapper.StudentMapper;
 import com.example.ex2_asm5.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
 
     @Autowired
@@ -59,12 +60,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDTO> listAll(NameRequest request) {
-        List<Student> students = studentRepository.findAll();
-        return students
-                .stream()
-                .filter(student -> request.getName().equalsIgnoreCase(student.getName()))
-                .map(studentMapper::mapToDTO)
-                .collect(Collectors.toList());
+        List<Student> students = studentRepository.findAllByNameContaining(request.getName());
+        return studentMapper.mapToDTOs(students);
     }
 
     @Override
@@ -83,11 +80,6 @@ public class StudentServiceImpl implements StudentService {
         student.setBirthDay(convertStringToDate(request.getBirthDay()));
         student.setName(request.getName());
         student.setRank(request.getRank());
-    }
-
-
-    private int sum(Integer a, Integer b) {
-        return a +b;
     }
 
 
