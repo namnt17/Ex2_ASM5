@@ -1,6 +1,5 @@
 package com.example.ex2_asm5.service.impl;
 
-import com.example.ex2_asm5.controller.dto.StudentDTO;
 import com.example.ex2_asm5.controller.request.NameRequest;
 import com.example.ex2_asm5.controller.request.StudentRequest;
 import com.example.ex2_asm5.entity.Student;
@@ -16,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -44,34 +44,38 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDTO create(StudentRequest request){
-        Student newStudent = studentMapper.mapToEntity(request);
+    public Student create(StudentRequest request){
+        Student newStudent = new Student();
+        newStudent.setGender(request.isGender());
+        newStudent.setBirthDay(convertStringToDate(request.getBirthDay()));
+        newStudent.setGpa(request.getGpa());
+        newStudent.setName(request.getName());
+        newStudent.setRank(request.getRank());
         studentRepository.save(newStudent);
-        return studentMapper.mapToDTO(newStudent);
+        return newStudent;
     }
 
     @Override
-    public StudentDTO update(StudentRequest request, Long id){
-        Student student = checkExitsStudent(id);
-        updateOrCreate(student, request);
-        studentRepository.save(student);
-        return studentMapper.mapToDTO(student);
+    public Student update(StudentRequest request, Long id){
+        Optional<Student> student = checkExitsStudent(id);
+        updateOrCreate(student.get(), request);
+        studentRepository.save(student.get());
+        return student.get();
     }
 
     @Override
-    public List<StudentDTO> listAll(NameRequest request) {
-        List<Student> students = studentRepository.findAllByNameContaining(request.getName());
-        return studentMapper.mapToDTOs(students);
+    public List<Student> listAll(NameRequest request) {
+         return studentRepository.findAllByNameContaining(request.getName());
     }
 
     @Override
     public void delete(Long id) {
-        Student student = checkExitsStudent(id);
-        studentRepository.delete(student);
+        Optional<Student> student = checkExitsStudent(id);
+        studentRepository.deleteById(student.get().getId());
     }
 
-    public Student checkExitsStudent(Long id){
-        return studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("This Student is not found!!"));
+    public Optional<Student> checkExitsStudent(Long id){
+        return Optional.ofNullable(studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("This Student is not found!!")));
     }
 
     public void updateOrCreate(Student student, StudentRequest request){

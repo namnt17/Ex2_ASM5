@@ -1,9 +1,9 @@
 package com.example.ex2_asm5.controller;
 
 
-import com.example.ex2_asm5.controller.dto.StudentDTO;
 import com.example.ex2_asm5.controller.request.NameRequest;
 import com.example.ex2_asm5.controller.request.StudentRequest;
+import com.example.ex2_asm5.entity.Student;
 import com.example.ex2_asm5.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -20,12 +20,12 @@ public class StudentController {
     private final StudentService studentService;
 
     @PostMapping("")
-    public StudentDTO createStudent(@RequestBody @Valid @Validated StudentRequest request){
+    public Student createStudent(@RequestBody @Valid @Validated StudentRequest request){
         return studentService.create(request);
     }
 
     @PutMapping("/{id}")
-    public StudentDTO updateStudent(@RequestBody @Valid @Validated StudentRequest request, @PathVariable("id") Long id){
+    public Student updateStudent(@RequestBody @Valid @Validated StudentRequest request, @PathVariable("id") Long id){
         return studentService.update(request, id);
     }
 
@@ -35,7 +35,7 @@ public class StudentController {
     }
 
     @GetMapping("/list")
-    public List<StudentDTO> listStudents (@RequestBody NameRequest request){
+    public List<Student> listStudents (@RequestBody NameRequest request){
         return studentService.listAll(request);
     }
 }
