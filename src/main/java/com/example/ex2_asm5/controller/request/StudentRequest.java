@@ -3,6 +3,7 @@ package com.example.ex2_asm5.controller.request;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,7 +21,7 @@ public class StudentRequest {
     @NotNull(message = "gender must not null")
     boolean gender;
 
-    @Size(min = 0, max = 10, message = "GPA must be between 0 to 10")
+    @Range(min = 0, max = 10, message = "GPA must be between 0 to 10")
     float gpa;
 
     String rank;

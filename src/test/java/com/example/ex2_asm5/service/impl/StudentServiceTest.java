@@ -5,41 +5,93 @@ import com.example.ex2_asm5.controller.request.NameRequest;
 import com.example.ex2_asm5.controller.request.StudentRequest;
 import com.example.ex2_asm5.entity.Student;
 import com.example.ex2_asm5.repository.StudentRepository;
+import com.example.ex2_asm5.repository.mapper.StudentMapper;
+import com.example.ex2_asm5.repository.mapper.StudentMapperImpl;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.ContextConfiguration;
 
 import javax.persistence.EntityNotFoundException;
-
+import javax.transaction.Transactional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@Transactional
+//@SpringBootTest
+//@Transactional
+@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest(classes = {StudentMapper.class, StudentMapperImpl.class})
+@ContextConfiguration()
 class StudentServiceTest {
 
-    @Autowired
+    @Spy
+    @InjectMocks
     private StudentServiceImpl service;
 
-    @Autowired
+    @Mock
     private StudentRepository studentRepository;
 
+    @Autowired
+    private StudentMapper studentMapper;
+
+
+
     @Test
-    @Rollback()
+    @Rollback
     void create() {
-        StudentRequest student = new StudentRequest();
-        student.setName("Nam");
-        student.setBirthDay("17/02/2000");
+        // 1.create mock data
+        String sDate1="31/12/1998";
+        String sDate2="17/02/2000";
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+            date2 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+//        List<Student> mockStudents = new ArrayList<>(List.of(new Student(1L, "Nam", date1, true, (float) 3.4, "Gioi"),
+//                                                            new Student(2L, "Duc", date2, true, (float) 2.6, "Kha")));
+        List<Student> mockStudents = new ArrayList<>();
+        Student student = new Student();
+        student.setId(1L);
+        student.setName("Nhi");
+        student.setBirthDay(date1);
         student.setGender(true);
-        student.setGpa((float) 3.4);
-        student.setRank("Gioi");
-        StudentDTO student1 = service.create(student);
-        Student student2 = studentRepository.findById(1L).orElseThrow(() -> new EntityNotFoundException("This student is not found!"));
-        assertEquals(student1.getName(), student2.getName());
+        student.setGpa((float) 2.4);
+        student.setRank("Trung binh");
+
+        StudentRequest studentRequest = new StudentRequest();
+        studentRequest.setName("Nhi");
+        studentRequest.setBirthDay("31/12/1998");
+        studentRequest.setGender(true);
+        studentRequest.setGpa((float) 2.4);
+        studentRequest.setRank("Trung Binh");
+
+        when(studentRepository.save(ArgumentMatchers.any(Student.class))).thenReturn(student);
+
+        StudentDTO studentCreated = service.create(studentRequest);
+        assertEquals(studentCreated.getName(), student.getName());
+        verify(studentRepository).save(student);
     }
 
 
@@ -59,12 +111,25 @@ class StudentServiceTest {
     @Test
     @Rollback
     void listAll() {
-        int totalRecordsInDataBase = studentRepository.findAll().size();
+        String sDate1="31/12/1998";
+        String sDate2="17/02/2000";
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+            date2 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        List<Student> mockStudents = new ArrayList<>(List.of(new Student(1L, "Nam", date1, true, (float) 3.4, "Gioi"),
+                                                            new Student(2L, "Duc", date2, true, (float) 2.6, "Kha")));
+
+        given(studentRepository.findAll()).willReturn(mockStudents);
         NameRequest nameRequest = new NameRequest();
         nameRequest.setName("");
         List<StudentDTO> students = service.listAll(nameRequest);
         int totalRecordsExpected = students.size();
-        assertEquals(totalRecordsExpected, totalRecordsInDataBase);
+        assertArrayEquals(totalRecordsExpected, totalRecordsInDataBase);
     }
 
     @Test
