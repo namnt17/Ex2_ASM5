@@ -14,10 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -35,18 +32,23 @@ class StudentServiceTest {
     @Mock
     private StudentRepository studentRepository;
 
-    @Mock
-    List<Student> mockList;
+    private List<Student> mockList = Arrays.asList(
+            new Student(1L, "Nam", new SimpleDateFormat("dd/MM/yyyy").parse("31/12/1998"), true, (float) 3.4, "Gioi"),
+            new Student(1L, "Duc", new SimpleDateFormat("dd/MM/yyyy").parse("31/12/1998"), true, (float) 2.6, "Gioi")
+    );
+
+    StudentServiceTest() throws ParseException {
+    }
 
     @Before
-    public void init(){
+    public void init() {
         MockitoAnnotations.initMocks(this);
     }
 
 
     @Test
     void create() {
-        String sDate1="31/12/1998";
+        String sDate1 = "31/12/1998";
         Date date1 = null;
         try {
             date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
@@ -73,11 +75,10 @@ class StudentServiceTest {
     }
 
 
-
     @Test
     void update() {
-        String sDate1="31/12/1998";
-        String sDate2="17/02/2000";
+        String sDate1 = "31/12/1998";
+        String sDate2 = "17/02/2000";
         Date date1 = null;
         Date date2 = null;
         try {
@@ -102,8 +103,8 @@ class StudentServiceTest {
 
     @Test
     void listAll() {
-        String sDate1="31/12/1998";
-        String sDate2="17/02/2000";
+        String sDate1 = "31/12/1998";
+        String sDate2 = "17/02/2000";
         Date date1 = null;
         Date date2 = null;
         try {
@@ -112,24 +113,19 @@ class StudentServiceTest {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Student student1 = new Student(1L, "Nam", date1, true, (float) 3.4, "Gioi");
-        Student student2 = new Student(2L, "Duc", date2, true, (float) 2.6, "Kha");
-        mockList.add(student1);
-        mockList.add(student2);
-        Mockito.verify(mockList).add(student1);
-        Mockito.verify(mockList).add(student2);
 
-        given(studentRepository.findAll()).willReturn(mockList);
         NameRequest nameRequest = new NameRequest();
         nameRequest.setName(null);
+        given(studentRepository.findAll()).willReturn(mockList);
+        given(studentRepository.findAllByNameContaining(nameRequest.getName())).willReturn(mockList);
         List<Student> students = service.listAll(nameRequest);
         assertEquals(students.size(), mockList.size());
-        verify(studentRepository).findAll();
+//        assertEquals(studentRepository.findAll(), students);
     }
 
     @Test
     void delete() {
-        String sDate1="31/12/1998";
+        String sDate1 = "31/12/1998";
         Date date1 = null;
         try {
             date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
